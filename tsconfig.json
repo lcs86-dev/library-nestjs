@@ -17,7 +17,8 @@
     "paths": {
       "@libs/*": ["./libs/*"],
       "@tests/*": ["./tests/*"]
-    }
+    },
+    "esModuleInterop": true
   },
   "include": ["libs", "tests", "tests/**/**.ts"],
   "exclude": ["node_modules", "dist"]

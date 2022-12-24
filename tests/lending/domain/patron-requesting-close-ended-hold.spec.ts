@@ -73,4 +73,30 @@ describe('PatronRequestingCloseEndedHold', () => {
       fixtures.ThenBookShouldBePlacedOnHoldTillDate(result);
     });
   });
+
+  test('patron cannot hold a book for 0 or negative amount of days', () => {
+    for (let days = -10; days <= 0; days++) {
+      const test = () => {
+        const patron = PatronFixtures.GivenRegularPatron();
+        const book = fixtures.GivenCirculatingAvailableBook();
+        fixtures.WhenRequestingCloseEndedHold(
+          patron,
+          book,
+          HoldDuration.closeEnded(NumberOfDays.of(days))
+        );
+      };
+      expect(test).toThrow();
+    }
+  });
+
+  test('patron cannot hold more books then it is allowed', () => {
+    const patron = fixtures.GivenPatronWithManyHolds();
+    const book = fixtures.GivenCirculatingAvailableBook();
+    const result = fixtures.WhenRequestingCloseEndedHold(
+      patron,
+      book,
+      HoldDuration.closeEnded(NumberOfDays.of(1))
+    );
+    fixtures.ThenItFailed(result);
+  });
 });

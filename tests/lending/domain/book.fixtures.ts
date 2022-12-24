@@ -5,7 +5,7 @@ import {
   LibraryBranchId,
   PatronId,
 } from '@libs/lending/domain';
-import { Version } from '@libs/shared/domain/src';
+import { Version } from '@libs/shared/domain';
 
 export class BookFixtures {
   static bookOnHold(): BookOnHold {
