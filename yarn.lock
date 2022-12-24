@@ -689,7 +689,7 @@
   resolved "https://registry.yarnpkg.com/@nestjs-architects/nx-ddd-plugin/-/nx-ddd-plugin-2.0.1.tgz#be0548269a6408f0dcb96b65c34b4e3b27e3e72b"
   integrity sha512-PJDN4WATxWWWW37nVmEM9g72yjwoXOqEs/17ASrmLzJ6V1bMpUUC7clC4qR1mgcXzjSOjmPFaV2EeOGBDmwF/g==
 
-"@nestjs-architects/typed-cqrs@1.0.0":
+"@nestjs-architects/typed-cqrs@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@nestjs-architects/typed-cqrs/-/typed-cqrs-1.0.0.tgz#aa562f309757b20fc47c918a34a4932bd02219b3"
   integrity sha512-AJSxL3CeWZzYhtefYTWMasHRTzjx92Ud210PZqi3IHbXnOvOBzZBW1dxbETAYjo8SCCLC57HJS1MkRQ3qa8ahg==
