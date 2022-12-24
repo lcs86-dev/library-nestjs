@@ -1,29 +1,33 @@
 import { Either, isLeft, left, right } from 'fp-ts/lib/Either';
 import { getLeft, isNone, none, Option } from 'fp-ts/lib/Option';
-import { AvailableBook, BookOnHold } from 'libs/lending/domain/book';
+import { AvailableBook } from './book/available-book';
+import { BookOnHold } from './book/book-on-hold';
+import { BookCheckOutFailed } from './events/book-check-out-failed';
+import { BookCheckedOut } from './events/book-checked-out';
+import { BookHoldCancelingFailed } from './events/book-hold-canceled';
+import { BookHoldCanceled } from './events/book-hold-canceling-failed';
+import { BookHoldFailed } from './events/book-hold-failed';
+import { BookPlacedOnHold } from './events/book-placed-on-hold';
+import { BookPlacedOnHoldEvents } from './events/book-placed-on-hold-events';
+import { MaximumNumberOhHoldsReached } from './events/maximum-number-on-holds-reached';
 import {
-  BookHoldCanceled,
-  BookHoldCancelingFailed,
-  BookPlacedOnHold,
-  BookPlacedOnHoldEvents,
-} from 'libs/lending/domain/events';
-import { BookHoldFailed } from 'libs/lending/domain/events/book-hold-failed';
-import { MaximumNumberOhHoldsReached } from 'libs/lending/domain/events/maximum-number-on-holds-reached';
-import { Rejection } from 'libs/lending/domain/policies.ts';
-import {
-  HoldDuration,
-  PatronHolds,
-  PatronInformation,
-} from 'libs/lending/domain/value-objects';
+  PlacingOnHoldPolicy,
+  Rejection,
+} from './policies/placing-on-hold-policy';
+import { HoldDuration } from './value-objects/hold-duration';
+import { PatronHolds } from './value-objects/patron-holds';
+import { PatronInformation } from './value-objects/patron-information';
 
 export class Patron {
   constructor(
     private readonly patronHolds: PatronHolds,
-    private readonly placingOnHoldPolicies,
+    private readonly placingOnHoldPolicies: Set<PlacingOnHoldPolicy>,
     private readonly patronInformation: PatronInformation
   ) {}
 
-  cancelHold(book: BookOnHold) {
+  cancelHold(
+    book: BookOnHold
+  ): Either<BookHoldCancelingFailed, BookHoldCanceled> {
     if (this.patronHolds.includes(book)) {
       return right(
         new BookHoldCanceled(
@@ -36,8 +40,34 @@ export class Patron {
     return left(new BookHoldCancelingFailed(this.patronInformation.patronId));
   }
 
+  checkoutBook(book: BookOnHold): Either<BookCheckOutFailed, BookCheckedOut> {
+    if (this.patronHolds.includes(book)) {
+      return right(new BookCheckedOut(this.patronInformation.patronId));
+    }
+
+    return left(
+      BookCheckOutFailed.bookCheckOutFailedBecause(
+        Rejection.withReason('book is not on hold by patron'),
+        this.patronInformation.patronId
+      )
+    );
+  }
+
   isRegular(): boolean {
     return this.patronInformation.isRegular();
+  }
+
+  placeOnCloseEndedHold(
+    book: AvailableBook,
+    duration: HoldDuration
+  ): Either<BookHoldFailed, BookPlacedOnHoldEvents> {
+    return this.placeOnHold(book, duration);
+  }
+
+  placeOnOpenEndedHold(
+    book: AvailableBook
+  ): Either<BookHoldFailed, BookPlacedOnHoldEvents> {
+    return this.placeOnCloseEndedHold(book, HoldDuration.openEnded());
   }
 
   numberOfHolds(): number {
@@ -58,19 +88,24 @@ export class Patron {
     return rejection ? getLeft(rejection) : none;
   }
 
-  placeOnHold(book: AvailableBook, duration: HoldDuration) {
+  placeOnHold(
+    book: AvailableBook,
+    duration: HoldDuration
+  ): Either<BookHoldFailed, BookPlacedOnHoldEvents> {
     const rejection = this.patronCanHold(book, duration);
     if (isNone(rejection)) {
       if (this.patronHolds.maximumHoldsAfterHoldingNextBook()) {
-        BookPlacedOnHoldEvents.events(
-          this.patronInformation.patronId,
-          new BookPlacedOnHold(
+        return right(
+          BookPlacedOnHoldEvents.events(
             this.patronInformation.patronId,
-            book.bookId,
-            book.libraryBranchId,
-            duration.to
-          ),
-          new MaximumNumberOhHoldsReached()
+            new BookPlacedOnHold(
+              this.patronInformation.patronId,
+              book.bookId,
+              book.libraryBranchId,
+              duration.to
+            ),
+            new MaximumNumberOhHoldsReached()
+          )
         );
       }
       return right(

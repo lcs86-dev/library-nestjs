@@ -15,11 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@library/shared/domain": ["libs/shared/domain/index.ts"],
-      "@library/shared/infrastructure-nestjs-cqrs-events": [
-        "libs/shared/infrastructure-nestjs-cqrs-events/index.ts"
-      ]
+      "@libs/*": ["./libs/*"],
+      "@tests/*": ["./tests/*"]
     }
   },
-  "exclude": ["node_modules"]
+  "include": ["libs", "tests", "tests/**/**.ts"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,6 +1,6 @@
-import { DateVO } from 'libs/lending/domain/value-objects/date.vo';
-import { NumberOfDays } from 'libs/lending/domain/value-objects/number-of-days';
 import { ensure, isGreaterThanOrEqualTo, TinyType } from 'tiny-types';
+import { DateVO } from './date.vo';
+import { NumberOfDays } from './number-of-days';
 
 export class HoldDuration extends TinyType {
   private constructor(
@@ -21,11 +21,9 @@ export class HoldDuration extends TinyType {
     const to = DateVO.now().addDays(days.value);
     return new HoldDuration(DateVO.now(), to);
   }
-
   static openEnded(): HoldDuration {
     return new HoldDuration(DateVO.now(), null);
   }
-
   isOpenEnded(): boolean {
     return !this.to;
   }

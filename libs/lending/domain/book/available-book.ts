@@ -1,7 +1,9 @@
-import { Version } from '@library/shared/domain';
-import { Book } from 'libs/lending/domain/book/book';
-import { BookId } from 'libs/lending/domain/value-objects/book-id';
-import { LibraryBranchId } from 'libs/lending/domain/value-objects/library-branch-id';
+import { Version } from '@libs/shared/domain';
+import { BookPlacedOnHold } from '../events/book-placed-on-hold';
+import { BookId } from '../value-objects/book-id';
+import { LibraryBranchId } from '../value-objects/library-branch-id';
+import { Book } from './book';
+import { BookOnHold } from './book-on-hold';
 
 export class AvailableBook implements Book {
   constructor(
@@ -10,12 +12,12 @@ export class AvailableBook implements Book {
     public readonly version: Version
   ) {}
 
-  // handleBookPlacedOnHold(bookPlacedOnHold: BookPlacedOnHold): BookOnHold {
-  //   return new BookOnHold(
-  //     this.bookId,
-  //     this.libraryBranchId,
-  //     bookPlacedOnHold.patronId,
-  //     this.version
-  //   );
-  // }
+  handleBookPlacedOnHold(bookPlacedOnHold: BookPlacedOnHold): BookOnHold {
+    return new BookOnHold(
+      this.bookId,
+      this.libraryBranchId,
+      bookPlacedOnHold.patronId,
+      this.version
+    );
+  }
 }

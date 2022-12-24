@@ -1,5 +1,5 @@
-import { Version } from '@library/shared/domain';
-import { BookId } from 'libs/lending/domain/value-objects/book-id';
+import { Version } from '@libs/shared/domain';
+import { BookId } from '../value-objects/book-id';
 
 export interface Book {
   bookId: BookId;

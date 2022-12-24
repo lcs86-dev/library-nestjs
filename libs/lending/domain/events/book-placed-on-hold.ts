@@ -1,10 +1,8 @@
-import { PatronEvent } from 'libs/lending/domain/events/patron-event';
-import {
-  BookId,
-  DateVO,
-  LibraryBranchId,
-  PatronId,
-} from 'libs/lending/domain/value-objects';
+import { BookId } from '../value-objects/book-id';
+import { DateVO } from '../value-objects/date.vo';
+import { LibraryBranchId } from '../value-objects/library-branch-id';
+import { PatronId } from '../value-objects/patron-id';
+import { PatronEvent } from './patron-event';
 
 export class BookPlacedOnHold implements PatronEvent {
   constructor(

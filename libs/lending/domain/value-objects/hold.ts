@@ -1,6 +1,6 @@
-import { BookId } from 'libs/lending/domain/value-objects/book-id';
-import { LibraryBranchId } from 'libs/lending/domain/value-objects/library-branch-id';
 import { TinyType } from 'tiny-types';
+import { BookId } from './book-id';
+import { LibraryBranchId } from './library-branch-id';
 
 export class Hold extends TinyType {
   constructor(

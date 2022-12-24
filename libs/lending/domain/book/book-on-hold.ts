@@ -1,8 +1,10 @@
-import { Version } from '@library/shared/domain';
-import { Book } from 'libs/lending/domain/book/book';
-import { BookId } from 'libs/lending/domain/value-objects/book-id';
-import { LibraryBranchId } from 'libs/lending/domain/value-objects/library-branch-id';
-import { PatronId } from 'libs/lending/domain/value-objects/patron-id';
+import { Version } from '@libs/shared/domain';
+import { BookHoldCanceled } from '../events/book-hold-canceling-failed';
+import { BookId } from '../value-objects/book-id';
+import { LibraryBranchId } from '../value-objects/library-branch-id';
+import { PatronId } from '../value-objects/patron-id';
+import { AvailableBook } from './available-book';
+import { Book } from './book';
 
 export class BookOnHold implements Book {
   constructor(
@@ -16,11 +18,11 @@ export class BookOnHold implements Book {
     return this.patronId.equals(patronId);
   }
 
-  // handleHoldCanceled(holdCanceled: BookHoldCanceled): AvailableBook {
-  //   return new AvailableBook(
-  //     this.bookId,
-  //     holdCanceled.libraryBranchId,
-  //     this.version
-  //   );
-  // }
+  handleHoldCanceled(holdCanceled: BookHoldCanceled): AvailableBook {
+    return new AvailableBook(
+      this.bookId,
+      holdCanceled.libraryBranchId,
+      this.version
+    );
+  }
 }

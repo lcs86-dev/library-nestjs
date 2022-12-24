@@ -1,4 +1,4 @@
-import { DomainEvent, DomainEvents } from '@library/shared/domain';
+import { DomainEvent, DomainEvents } from '@libs/shared/domain';
 import { Injectable } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 

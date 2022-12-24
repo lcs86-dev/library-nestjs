@@ -1,7 +1,8 @@
 import { Either, left, right } from 'fp-ts/lib/Either';
-import { AvailableBook } from 'libs/lending/domain/book';
-import { Patron } from 'libs/lending/domain/patron';
-import { HoldDuration, PatronHolds } from 'libs/lending/domain/value-objects';
+import { AvailableBook } from '../book/available-book';
+import { Patron } from '../patron';
+import { HoldDuration } from '../value-objects/hold-duration';
+import { PatronHolds } from '../value-objects/patron-holds';
 
 export interface PlacingOnHoldPolicy {
   (book: AvailableBook, patron: Patron, duration: HoldDuration): Either<
@@ -18,13 +19,13 @@ export const regularPatronMaximumNumberOfHoldsPolicy: PlacingOnHoldPolicy = (
     patron.isRegular() &&
     patron.numberOfHolds() >= PatronHolds.MAX_NUMBER_OF_HOLDS
   ) {
-    return left(Rejection.withReason('patron cannot hold more blocks'));
+    return left(Rejection.withReason('patron cannot hold more books'));
   }
   return right(new Allowance());
 };
 
 export const onlyResearcherPatronsCanPlaceOpenEndedHolds: PlacingOnHoldPolicy =
-  (toHold, patron, holdDuration) => {
+  (toHold: AvailableBook, patron: Patron, holdDuration: HoldDuration) => {
     if (patron.isRegular() && holdDuration.isOpenEnded()) {
       return left(
         Rejection.withReason('regular patron cannot place open ended holds')

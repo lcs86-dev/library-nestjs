@@ -1,5 +1,5 @@
-import { BookOnHold } from 'libs/lending/domain/book';
-import { Hold } from 'libs/lending/domain/value-objects/hold';
+import { BookOnHold } from '../book/book-on-hold';
+import { Hold } from './hold';
 
 export class PatronHolds {
   static MAX_NUMBER_OF_HOLDS = 5;

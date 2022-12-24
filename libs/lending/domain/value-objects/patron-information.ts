@@ -1,5 +1,5 @@
-import { PatronId } from 'libs/lending/domain/value-objects/patron-id';
-import { PatronType } from 'libs/lending/domain/value-objects/patron-type';
+import { PatronId } from './patron-id';
+import { PatronType } from './patron-type';
 
 export class PatronInformation {
   constructor(

@@ -1,6 +1,6 @@
-import { PatronEvent } from 'libs/lending/domain/events';
-import { Rejection } from 'libs/lending/domain/policies.ts';
-import { PatronId } from 'libs/lending/domain/value-objects';
+import { Rejection } from '../policies/placing-on-hold-policy';
+import { PatronId } from '../value-objects/patron-id';
+import { PatronEvent } from './patron-event';
 
 export class BookHoldFailed implements PatronEvent {
   constructor(
